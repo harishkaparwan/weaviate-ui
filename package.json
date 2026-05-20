@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "docker:build": "docker build -t weaviate-ui:local .",
+    "podman:build": "podman build --format docker -t weaviate-ui:local .",
+    "podman:run": "podman run --rm -p 8080:80 weaviate-ui:local",
     "extension:sync": "npm --prefix vscode-extension run sync-ui",
     "extension:package": "npm run build && npm run extension:sync && npm --prefix vscode-extension run package",
     "lint": "eslint .",

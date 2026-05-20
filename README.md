@@ -9,7 +9,7 @@ A lightweight React workbench for browsing a local or remote Weaviate instance. 
 - Load objects by class with a configurable limit
 - Prepare batch inserts from JSON or CSV
 - Run GraphQL queries against `/v1/graphql`
-- Run as a local Vite app, a public Docker image, or a VS Code webview extension
+- Run as a local Vite app, a public OCI container image, or a VS Code webview extension
 
 ## Local Development
 
@@ -29,31 +29,31 @@ npm run preview
 
 The static build is written to `dist/`.
 
-## Docker
+## Podman
 
 Build the image locally:
 
 ```bash
-npm run docker:build
+npm run podman:build
 ```
 
 Run it:
 
 ```bash
-docker run --rm -p 8080:80 weaviate-ui:local
+npm run podman:run
 ```
 
 Then open `http://localhost:8080`.
 
 ## Public Image
 
-The GitHub Actions workflow in `.github/workflows/docker-publish.yml` publishes to GitHub Container Registry when code is pushed to `main` or a version tag.
+The GitHub Actions workflow in `.github/workflows/container-publish.yml` uses Podman-compatible Buildah actions and publishes to GitHub Container Registry when code is pushed to `main` or a version tag.
 
 After the repository is public and GitHub Actions has run, the image will be available as:
 
 ```bash
-docker pull ghcr.io/harishkaparwan/weaviate-ui:latest
-docker run --rm -p 8080:80 ghcr.io/harishkaparwan/weaviate-ui:latest
+podman pull ghcr.io/harishkaparwan/weaviate-ui:latest
+podman run --rm -p 8080:80 ghcr.io/harishkaparwan/weaviate-ui:latest
 ```
 
 If the package is not visible publicly, open the package settings in GitHub and change its visibility to public.
@@ -84,7 +84,7 @@ Then open `vscode-extension/` in VS Code and run the extension host. Use the com
 This project is configured for:
 
 - Repository: `https://github.com/harishkaparwan/weaviate-ui.git`
-- Docker image: `ghcr.io/harishkaparwan/weaviate-ui`
+- Public container image: `ghcr.io/harishkaparwan/weaviate-ui`
 - VS Code extension publisher id: `harishkaparwan`
 
 To publish the local folder:
