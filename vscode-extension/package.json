@@ -3,7 +3,7 @@
   "displayName": "Weaviate UI",
   "description": "Open the Weaviate UI workbench inside VS Code.",
   "version": "0.0.1",
-  "publisher": "harishkaparwan",
+  "publisher": "weaviate-ui",
   "license": "MIT",
   "repository": {
     "type": "git",
