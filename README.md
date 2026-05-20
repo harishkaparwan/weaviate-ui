@@ -86,6 +86,7 @@ This project is configured for:
 - Repository: `https://github.com/harishkaparwan/weaviate-ui.git`
 - Public container image: `ghcr.io/harishkaparwan/weaviate-ui`
 - VS Code extension publisher id: `harishkaparwan`
+- VS Code extension Marketplace id: `harishkaparwan.weaviate-compass`
 
 To publish the local folder:
 
