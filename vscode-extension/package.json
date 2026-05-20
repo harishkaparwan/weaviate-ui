@@ -1,6 +1,6 @@
 {
   "name": "weaviate-db",
-  "displayName": "Weaviate UI",
+  "displayName": "Weaviate DB",
   "description": "Open the Weaviate UI workbench inside VS Code.",
   "version": "0.0.1",
   "publisher": "harishkaparwan",
