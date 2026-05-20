@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+.git
+.github
+.vscode
+vscode-extension/node_modules
+vscode-extension/media
+vscode-extension/*.vsix
+*.log
+*.local
+.DS_Store

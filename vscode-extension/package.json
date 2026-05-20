@@ -1,0 +1,44 @@
+{
+  "name": "weaviate-ui",
+  "displayName": "Weaviate UI",
+  "description": "Open the Weaviate UI workbench inside VS Code.",
+  "version": "0.0.1",
+  "publisher": "harishkaparwan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harishkaparwan/weaviate-ui.git",
+    "directory": "vscode-extension"
+  },
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:weaviate-ui.open"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "weaviate-ui.open",
+        "title": "Weaviate UI: Open Workbench"
+      }
+    ]
+  },
+  "scripts": {
+    "sync-ui": "node scripts/sync-ui.mjs",
+    "package": "vsce package --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.0"
+  },
+  "files": [
+    "extension.js",
+    "media",
+    "README.md",
+    "LICENSE"
+  ]
+}
