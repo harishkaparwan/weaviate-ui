@@ -1,25 +1,25 @@
-# Weaviate UI for VS Code
+# Weaviate DB
 
-Open the Weaviate UI workbench inside a VS Code webview.
+Weaviate DB opens a self-contained Weaviate workbench inside VS Code-compatible editors, including VS Code and Windsurf.
 
-The installed extension is self-contained. It includes the built web assets under `media/`, so users do not need npm, Vite, Podman, or any other external command after installing it from VS Code Marketplace, Open VSX, or a local VSIX.
+## Features
 
-## Development
+- Connect to a Weaviate endpoint such as `http://localhost:8083`
+- Browse schema classes and properties
+- View objects by class
+- Prepare JSON or CSV batch inserts
+- Run GraphQL queries from an editor webview
 
-From the repository root:
+## Usage
 
-```bash
-npm install
-npm run build
-npm run extension:sync
+After installing the extension, open the command palette and run:
+
+```text
+Weaviate UI: Open Workbench
 ```
 
-Then open the `vscode-extension` folder in VS Code and run the extension host.
+The extension opens the bundled workbench in an editor tab. No npm, Vite, Podman, Docker, or external command is required after installation.
 
-## Package
+## Notes
 
-```bash
-npm run extension:package
-```
-
-The generated `.vsix` can be installed locally or published to the Visual Studio Marketplace after you create a publisher account.
+If your Weaviate instance runs on a different host or port, enter that endpoint in the connection field. Browser-based requests must be allowed by your Weaviate server configuration.
