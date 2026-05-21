@@ -2,6 +2,8 @@
 
 Open the Weaviate UI workbench inside a VS Code webview.
 
+The installed extension is self-contained. It includes the built web assets under `media/`, so users do not need npm, Vite, Podman, or any other external command after installing it from VS Code Marketplace, Open VSX, or a local VSIX.
+
 ## Development
 
 From the repository root:

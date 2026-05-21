@@ -30,8 +30,8 @@ function getWebviewHtml(context, webview) {
       '<!doctype html>',
       '<html lang="en">',
       '<body>',
-      '<h1>Weaviate UI has not been bundled yet.</h1>',
-      '<p>Run <code>npm run extension:package</code> from the repository root.</p>',
+      '<h1>Weaviate DB assets are missing.</h1>',
+      '<p>Reinstall the extension from the Marketplace, Open VSX, or a freshly packaged VSIX.</p>',
       '</body>',
       '</html>',
     ].join('')
