@@ -1,8 +1,8 @@
 {
   "name": "weaviate-db",
   "displayName": "Weaviate DB",
-  "description": "Open the Weaviate UI workbench inside VS Code.",
-  "version": "0.0.3",
+  "description": "Browse Weaviate schemas, objects, imports, and GraphQL queries from an editor webview.",
+  "version": "0.0.6",
   "publisher": "harishkaparwan",
   "license": "MIT",
   "repository": {
@@ -14,13 +14,41 @@
     "vscode": "^1.100.0"
   },
   "categories": [
+    "Data Science",
     "Other"
   ],
+  "icon": "icon.png",
+  "keywords": [
+    "weaviate",
+    "database",
+    "vector-database",
+    "graphql",
+    "workbench"
+  ],
   "activationEvents": [
-    "onCommand:weaviate-ui.open"
+    "onCommand:weaviate-ui.open",
+    "onView:weaviate-ui.workbench"
   ],
   "main": "./extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "weaviate-ui",
+          "title": "Weaviate DB",
+          "icon": "media/favicon.svg"
+        }
+      ]
+    },
+    "views": {
+      "weaviate-ui": [
+        {
+          "id": "weaviate-ui.workbench",
+          "name": "Workbench",
+          "type": "webview"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "weaviate-ui.open",
@@ -30,15 +58,21 @@
   },
   "scripts": {
     "sync-ui": "node scripts/sync-ui.mjs",
-    "package": "vsce package --allow-missing-repository"
+    "package": "vsce package --allow-missing-repository",
+    "publish:vscode": "vsce publish --allow-missing-repository",
+    "publish:open-vsx": "ovsx publish"
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.6.0"
+    "@vscode/vsce": "^3.6.0",
+    "ovsx": "^0.10.12"
   },
   "files": [
     "extension.js",
+    "icon.png",
     "media",
     "README.md",
+    "CHANGELOG.md",
+    "SUPPORT.md",
     "LICENSE"
   ]
 }

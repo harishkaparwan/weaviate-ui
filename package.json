@@ -14,8 +14,13 @@
     "build": "tsc -b && vite build",
     "podman:build": "podman build --format docker -t weaviate-ui:local .",
     "podman:run": "podman run --rm -p 8080:80 weaviate-ui:local",
+    "chrome:sync": "npm --prefix chrome-extension run sync-ui",
+    "chrome:build": "npm run build && npm run chrome:sync",
+    "chrome:package": "npm run chrome:build && npm --prefix chrome-extension run package",
     "extension:sync": "npm --prefix vscode-extension run sync-ui",
     "extension:package": "npm run build && npm run extension:sync && npm --prefix vscode-extension run package",
+    "extension:publish:vscode": "npm run build && npm run extension:sync && npm --prefix vscode-extension run publish:vscode",
+    "extension:publish:windsurf": "npm run build && npm run extension:sync && npm --prefix vscode-extension run publish:open-vsx",
     "lint": "eslint .",
     "preview": "vite preview"
   },

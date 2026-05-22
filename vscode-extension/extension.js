@@ -2,6 +2,8 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vscode = require('vscode')
 
+const WEBVIEW_VIEW_ID = 'weaviate-ui.workbench'
+
 function activate(context) {
   const disposable = vscode.commands.registerCommand('weaviate-ui.open', () => {
     const panel = vscode.window.createWebviewPanel(
@@ -18,7 +20,31 @@ function activate(context) {
     panel.webview.html = getWebviewHtml(context, panel.webview)
   })
 
-  context.subscriptions.push(disposable)
+  const sidebarProvider = new WeaviateWorkbenchViewProvider(context)
+
+  context.subscriptions.push(
+    disposable,
+    vscode.window.registerWebviewViewProvider(WEBVIEW_VIEW_ID, sidebarProvider, {
+      webviewOptions: {
+        retainContextWhenHidden: true,
+      },
+    }),
+  )
+}
+
+class WeaviateWorkbenchViewProvider {
+  constructor(context) {
+    this.context = context
+  }
+
+  resolveWebviewView(webviewView) {
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [vscode.Uri.file(path.join(this.context.extensionPath, 'media'))],
+    }
+
+    webviewView.webview.html = getWebviewHtml(this.context, webviewView.webview)
+  }
 }
 
 function getWebviewHtml(context, webview) {

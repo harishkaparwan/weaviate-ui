@@ -54,9 +54,87 @@ type InsertResult = {
 
 const defaultEndpoint = 'http://localhost:8083'
 
+const demoSchema: WeaviateSchema = {
+  classes: [
+    {
+      class: 'Article',
+      description: 'Sample articles for trying the workbench after installation.',
+      vectorizer: 'text2vec-openai',
+      vectorIndexType: 'hnsw',
+      replicationConfig: { factor: 1 },
+      properties: [
+        { name: 'title', dataType: ['text'], description: 'Article title', tokenization: 'word' },
+        { name: 'summary', dataType: ['text'], description: 'Short abstract', tokenization: 'word' },
+        { name: 'category', dataType: ['text'], description: 'Editorial category', tokenization: 'field' },
+        { name: 'publishedAt', dataType: ['date'], description: 'Publication timestamp' },
+      ],
+    },
+    {
+      class: 'Product',
+      description: 'Sample product catalog records.',
+      vectorizer: 'text2vec-transformers',
+      vectorIndexType: 'hnsw',
+      replicationConfig: { factor: 1 },
+      properties: [
+        { name: 'name', dataType: ['text'], description: 'Product name', tokenization: 'word' },
+        { name: 'description', dataType: ['text'], description: 'Searchable product description', tokenization: 'word' },
+        { name: 'price', dataType: ['number'], description: 'Unit price' },
+        { name: 'inStock', dataType: ['boolean'], description: 'Availability flag' },
+      ],
+    },
+  ],
+}
+
+const demoObjects: Record<string, WeaviateObject[]> = {
+  Article: [
+    {
+      id: 'demo-article-001',
+      class: 'Article',
+      properties: {
+        title: 'Building a local vector search workbench',
+        summary: 'A compact workflow for inspecting schema, objects, and GraphQL queries.',
+        category: 'engineering',
+        publishedAt: '2026-05-21T14:00:00.000Z',
+      },
+    },
+    {
+      id: 'demo-article-002',
+      class: 'Article',
+      properties: {
+        title: 'Understanding semantic imports',
+        summary: 'How JSON and CSV records map into Weaviate batch objects.',
+        category: 'data',
+        publishedAt: '2026-05-20T09:30:00.000Z',
+      },
+    },
+  ],
+  Product: [
+    {
+      id: 'demo-product-001',
+      class: 'Product',
+      properties: {
+        name: 'Vector Notebook',
+        description: 'A sample catalog item with searchable text fields.',
+        price: 24.99,
+        inStock: true,
+      },
+    },
+    {
+      id: 'demo-product-002',
+      class: 'Product',
+      properties: {
+        name: 'Schema Explorer',
+        description: 'A demo object for testing object browsing.',
+        price: 49,
+        inStock: false,
+      },
+    },
+  ],
+}
+
 function App() {
   const [endpoint, setEndpoint] = useState(defaultEndpoint)
-  const [schema, setSchema] = useState<WeaviateSchema | null>(null)
+  const [schema, setSchema] = useState<WeaviateSchema | null>(demoSchema)
   const [selectedClass, setSelectedClass] = useState<string>('')
   const [activeTab, setActiveTab] = useState<ViewTab>('overview')
   const [objects, setObjects] = useState<WeaviateObject[]>([])
@@ -74,12 +152,27 @@ function App() {
   const [insertLoading, setInsertLoading] = useState(false)
   const [insertResult, setInsertResult] = useState<InsertResult | null>(null)
   const [insertError, setInsertError] = useState('')
+  const [isDemoMode, setIsDemoMode] = useState(true)
 
   const classes = useMemo(() => schema?.classes ?? [], [schema])
   const activeClass = classes.find((item) => item.class === selectedClass) ?? classes[0]
   const baseUrl = endpoint.trim().replace(/\/$/, '')
 
+  function loadDemoWorkspace() {
+    setIsDemoMode(true)
+    setSchema(demoSchema)
+    setSelectedClass('')
+    setActiveTab('overview')
+    setError('')
+    setObjects([])
+    const firstClass = demoSchema.classes?.[0]
+    if (firstClass) {
+      prepareClassWorkspace(firstClass)
+    }
+  }
+
   async function loadSchema() {
+    setIsDemoMode(false)
     setLoading(true)
     setError('')
 
@@ -109,6 +202,12 @@ function App() {
   async function loadObjects(className = activeClass?.class) {
     if (!className) {
       setObjects([])
+      return
+    }
+
+    if (isDemoMode) {
+      setObjects((demoObjects[className] ?? []).slice(0, objectLimit))
+      setObjectsError('')
       return
     }
 
@@ -244,6 +343,20 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
 
   async function submitInsert() {
     if (!activeClass) return
+
+    if (isDemoMode) {
+      try {
+        const parsed = JSON.parse(insertJson || '[]') as unknown
+        const records = Array.isArray(parsed) ? parsed : [parsed]
+        setInsertResult({ success: records.length, failed: 0, errors: [] })
+        setInsertError('')
+      } catch (err) {
+        setInsertResult(null)
+        setInsertError(err instanceof Error ? err.message : 'Unable to parse objects')
+      }
+      return
+    }
+
     setInsertLoading(true)
     setInsertError('')
     setInsertResult(null)
@@ -293,6 +406,25 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
   }
 
   async function runGraphQlQuery() {
+    if (isDemoMode) {
+      const className = activeClass?.class ?? 'Article'
+      setGraphqlResult({
+        data: {
+          Get: {
+            [className]: (demoObjects[className] ?? []).map((object) => ({
+              ...object.properties,
+              _additional: {
+                id: object.id,
+                distance: 0.12,
+              },
+            })),
+          },
+        },
+      })
+      setGraphqlError('')
+      return
+    }
+
     setGraphqlLoading(true)
     setGraphqlError('')
     setGraphqlResult(null)
@@ -347,6 +479,9 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
             {loading ? 'Connecting...' : 'Connect'}
           </button>
           {error ? <p className="error-message">{error}</p> : null}
+          <button className="secondary full-width" type="button" onClick={loadDemoWorkspace}>
+            Open bundled demo
+          </button>
         </form>
 
         <div className="nav-section">
@@ -387,7 +522,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
             <h1>{activeClass?.class ?? 'Weaviate Connection'}</h1>
           </div>
           <div className="status-pills">
-            <span className={error ? 'offline' : schema ? 'online' : ''}>{error ? 'Offline' : schema ? 'Connected' : 'Idle'}</span>
+            <span className={error ? 'offline' : schema ? 'online' : ''}>{error ? 'Offline' : isDemoMode ? 'Demo ready' : schema ? 'Connected' : 'Idle'}</span>
             <span>{classes.reduce((total, item) => total + (item.properties?.length ?? 0), 0)} properties</span>
           </div>
         </header>
@@ -430,7 +565,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                     </article>
                     <article>
                       <span>Endpoint</span>
-                      <strong>{baseUrl}</strong>
+                      <strong>{isDemoMode ? 'Bundled demo' : baseUrl}</strong>
                     </article>
                   </div>
 

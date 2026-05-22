@@ -70,6 +70,39 @@ npm run extension:package
 
 That command builds the Vite app, syncs `dist/` into `vscode-extension/media/`, and creates a `.vsix` package from the extension folder.
 
+Publish to the VS Code Marketplace:
+
+```bash
+cd vscode-extension
+VSCE_PAT=<azure-devops-marketplace-token> npm run publish:vscode
+```
+
+Or from the project root after the token is available in your shell:
+
+```bash
+npm run extension:publish:vscode
+```
+
+Publish to Open VSX for Windsurf:
+
+```bash
+cd vscode-extension
+OVSX_PAT=<open-vsx-token> npm run publish:open-vsx
+```
+
+Or from the project root after the token is available in your shell:
+
+```bash
+npm run extension:publish:windsurf
+```
+
+Before the first Open VSX publish, create the namespace once:
+
+```bash
+cd vscode-extension
+npx ovsx create-namespace harishkaparwan -p <open-vsx-token>
+```
+
 During extension development:
 
 ```bash
@@ -78,6 +111,30 @@ npm run extension:sync
 ```
 
 Then open `vscode-extension/` in VS Code and run the extension host. Use the command palette command `Weaviate UI: Open Workbench`.
+
+## Chrome Extension
+
+The Chrome extension lives in `chrome-extension/`. It opens the same built UI in a Chrome extension tab.
+
+Build the unpacked extension:
+
+```bash
+npm run chrome:build
+```
+
+Then open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select:
+
+```text
+chrome-extension/build
+```
+
+Package the extension as a zip:
+
+```bash
+npm run chrome:package
+```
+
+The zip is written to `chrome-extension/weaviate-db-chrome.zip`.
 
 ## GitHub Setup
 

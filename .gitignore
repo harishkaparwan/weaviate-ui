@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+chrome-extension/build
+chrome-extension/*.zip
 vscode-extension/node_modules
 vscode-extension/media
 vscode-extension/*.vsix
