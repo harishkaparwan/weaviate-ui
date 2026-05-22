@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Weaviate DB",
   "description": "Browse Weaviate schemas, objects, imports, and GraphQL queries from Chrome.",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "action": {
     "default_title": "Open Weaviate DB",
     "default_icon": {

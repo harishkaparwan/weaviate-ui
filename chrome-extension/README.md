@@ -2,7 +2,23 @@
 
 This folder wraps the Weaviate DB React workbench as a Chrome Manifest V3 extension.
 
-The extension opens with a bundled demo workspace, so users can explore the UI immediately after installation. A real local or remote Weaviate endpoint is optional and can be entered from the connection panel.
+## Before You Install
+
+Start a Weaviate database first. You can use an existing local or remote Weaviate server, or start one with Docker or Podman.
+
+Docker:
+
+```bash
+docker run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
+```
+
+Podman:
+
+```bash
+podman run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
+```
+
+After Weaviate is running, load the extension and connect to `http://localhost:8083`. If your Weaviate server is already running on another host or port, enter that endpoint in the connection panel.
 
 ## Build
 

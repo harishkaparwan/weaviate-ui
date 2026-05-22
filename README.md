@@ -2,6 +2,24 @@
 
 A lightweight React workbench for browsing a local or remote Weaviate instance. It can inspect schema classes, view objects, prepare inserts from JSON or CSV, and run GraphQL queries from a focused browser UI.
 
+## Prerequisite: Start Weaviate First
+
+Before installing or opening Weaviate UI, make sure a Weaviate database is running. You can use an existing local or remote Weaviate server, or start one with Docker or Podman.
+
+Docker:
+
+```bash
+docker run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
+```
+
+Podman:
+
+```bash
+podman run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
+```
+
+Then use `http://localhost:8083` in the connection panel. If you already have Weaviate running somewhere else, enter that endpoint instead.
+
 ## Features
 
 - Connect to a Weaviate HTTP endpoint, defaulting to `http://localhost:8083`
