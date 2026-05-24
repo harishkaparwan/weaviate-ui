@@ -50,16 +50,6 @@ type ProjectCard = {
   docsHref: string;
 };
 
-type DirectoryGroup = {
-  title: string;
-  summary: string;
-  links: Array<{
-    label: string;
-    href: string;
-    tag: string;
-  }>;
-};
-
 const repoUrl = "https://github.com/harishkaparwan/weaviate-ui";
 const docsRoot = `${repoUrl}/tree/main`;
 const githubProfile = "https://github.com/harishkaparwan";
@@ -208,48 +198,6 @@ const experience = [
   {
     role: "Packaging & Delivery",
     detail: "Shipped the same product across web, extension, container, and static hosting targets.",
-  },
-];
-
-const myLifeMilestones = [
-  {
-    title: "Builder mindset",
-    detail: "I enjoy converting complex AI workflows into practical products that people can use daily.",
-  },
-  {
-    title: "Systems first",
-    detail: "My focus is reliability across retrieval quality, developer tooling, and cross-surface delivery.",
-  },
-  {
-    title: "Shipped outcomes",
-    detail: "I prioritize shipping across web, extensions, and automation pipelines over isolated demos.",
-  },
-];
-
-const directoryGroups: DirectoryGroup[] = [
-  {
-    title: "Database",
-    summary: "Vector database pages and practical tools for schema, query, and data operations.",
-    links: [
-      { label: "Weaviate UI", href: repoUrl, tag: "core" },
-      { label: "Schema + Query docs", href: `${docsRoot}/README.md`, tag: "docs" },
-    ],
-  },
-  {
-    title: "AI",
-    summary: "Semantic retrieval, RAG flow, and automation stories grounded in this portfolio.",
-    links: [
-      { label: "AI Search Demo", href: "#ai-search", tag: "live" },
-      { label: "RAG Architecture", href: "#architecture", tag: "flow" },
-    ],
-  },
-  {
-    title: "MCP",
-    summary: "Tool-routing and memory patterns for agent-led workflows and command execution.",
-    links: [
-      { label: "MCP Section", href: "#mcp", tag: "section" },
-      { label: "Repository", href: repoUrl, tag: "source" },
-    ],
   },
 ];
 
@@ -457,13 +405,6 @@ export default function Home() {
       <div className="ambient ambient-two" aria-hidden="true" />
       <ParticleField />
 
-      <nav className="top-nav glass-panel" aria-label="Primary">
-        <a href="#my-life">MyLife</a>
-        <a href="#pages">Pages</a>
-        <a href="#projects">Projects</a>
-        <a href="#architecture">Architecture</a>
-      </nav>
-
       <section className="hero-grid section-fade">
         <div className="hero-copy">
           <motion.p
@@ -562,69 +503,6 @@ export default function Home() {
             <p>{metric.description}</p>
           </motion.article>
         ))}
-      </section>
-
-      <section className="section-block section-fade" id="my-life">
-        <SectionHeading
-          eyebrow="MYLIFE"
-          title="How I approach AI engineering"
-          copy="A concise story of how I work: build useful systems, keep quality high, and ship across real user surfaces."
-        />
-        <div className="mylife-grid">
-          {myLifeMilestones.map((item, index) => (
-            <motion.article
-              key={item.title}
-              className="glass-panel mylife-card"
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.42, delay: index * 0.06 }}
-            >
-              <span>0{index + 1}</span>
-              <h3>{item.title}</h3>
-              <p>{item.detail}</p>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-block section-fade" id="pages">
-        <SectionHeading
-          eyebrow="PAGES / PROJECTS"
-          title="Main page directory"
-          copy="Organized entry points for Database, AI, and MCP. You can expand these categories anytime with more pages."
-        />
-        <div className="directory-grid">
-          {directoryGroups.map((group, index) => (
-            <motion.article
-              key={group.title}
-              className="glass-panel directory-card"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.42, delay: index * 0.06 }}
-            >
-              <div className="directory-head">
-                <h3>{group.title}</h3>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-              </div>
-              <p>{group.summary}</p>
-              <div className="directory-links">
-                {group.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target={link.href.startsWith("http") ? "_blank" : undefined}
-                    rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                  >
-                    {link.label}
-                    <i>{link.tag}</i>
-                  </a>
-                ))}
-              </div>
-            </motion.article>
-          ))}
-        </div>
       </section>
 
       <section className="section-block section-fade">
@@ -787,7 +665,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-block section-fade" id="mcp">
+      <section className="section-block section-fade">
         <SectionHeading
           eyebrow="MCP TOOLING"
           title="Tooling and context management"
@@ -880,7 +758,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-block section-fade" id="ai-search">
+      <section className="section-block section-fade">
         <SectionHeading
           eyebrow="INTERACTIVE AI SEARCH DEMO"
           title="A semantic search preview tied to real project context"
