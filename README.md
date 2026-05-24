@@ -47,6 +47,23 @@ npm run preview
 
 The static build is written to `dist/`.
 
+## Free GitHub Pages Hosting
+
+This repository includes `.github/workflows/deploy-pages.yml` to publish a static site to GitHub Pages for free.
+
+1. Push your code to the `main` branch on GitHub.
+2. Open GitHub repo settings: **Settings -> Pages**.
+3. Set **Source** to **GitHub Actions**.
+4. Wait for the `Deploy GitHub Pages` workflow to finish.
+
+Your site will be available at:
+
+```text
+https://harishkaparwan.github.io/weaviate-ui/
+```
+
+The workflow builds the Vite app, uploads `dist/`, and deploys it with the official GitHub Pages Actions. Hosting and HTTPS are included at no cost for public repositories.
+
 ## Podman
 
 Build the image locally:

@@ -1,7 +1,7 @@
 {
   "name": "weaviate-ui",
   "private": false,
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "A browser-based workbench for inspecting Weaviate schemas, objects, inserts, and GraphQL queries.",
   "license": "MIT",
   "repository": {
@@ -12,6 +12,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build",
     "podman:build": "podman build --format docker -t weaviate-ui:local .",
     "podman:run": "podman run --rm -p 8080:80 weaviate-ui:local",
     "chrome:sync": "npm --prefix chrome-extension run sync-ui",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tauri-apps/cli": "^2.11.2",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
