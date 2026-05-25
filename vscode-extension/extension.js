@@ -100,6 +100,7 @@ function getWebviewHtml(context, webview) {
   }
 
   const nonce = getNonce()
+  const logoUri = webview.asWebviewUri(vscode.Uri.file(path.join(mediaRoot, 'weaviate-db-logo.png'))).toString()
   let html = fs.readFileSync(indexPath, 'utf8')
 
   html = html.replace(/(src|href)="([^"]+)"/g, (match, attribute, assetPath) => {
@@ -181,7 +182,9 @@ function getWebviewHtml(context, webview) {
     };
   })();</script>`
 
-  html = html.replace('</head>', `${bridgeBootstrap}</head>`)
+  const logoBootstrap = `<script nonce="${nonce}">window.__WEAVIATE_LOGO_URI__=${JSON.stringify(logoUri)};</script>`
+
+  html = html.replace('</head>', `${logoBootstrap}${bridgeBootstrap}</head>`)
 
   html = html.replace(/<script /g, `<script nonce="${nonce}" `)
   return html

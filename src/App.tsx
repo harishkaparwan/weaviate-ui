@@ -79,6 +79,7 @@ type TauriInvoke = <T>(command: string, args?: Record<string, unknown>) => Promi
 declare global {
   interface Window {
     __TAURI_INTERNALS__?: unknown
+    __WEAVIATE_LOGO_URI__?: string
   }
 }
 
@@ -166,6 +167,10 @@ function SchemaIcon({ className }: { className?: string }) {
 }
 
 function App() {
+  const brandLogoSrc = typeof window !== 'undefined' && window.__WEAVIATE_LOGO_URI__
+    ? window.__WEAVIATE_LOGO_URI__
+    : 'weaviate-db-logo.png'
+
   const [endpoint, setEndpoint] = useState(defaultEnvEndpoint || defaultEndpoint)
   const [connectionType, setConnectionType] = useState<ConnectionType>(defaultEnvEndpoint ? 'cluster' : 'local')
   const [apiKey, setApiKey] = useState(defaultEnvApiKey)
@@ -615,7 +620,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
     <main className="compass-shell">
       <aside className="left-rail">
         <div className="brand-block">
-          <img className="brand-mark" src="weaviate-db-logo.png" alt="Weaviate DB logo" />
+          <img className="brand-mark" src={brandLogoSrc} alt="Weaviate DB logo" />
           <div>
             <strong>Weaviate DB</strong>
             <p>Vector DB Workbench</p>

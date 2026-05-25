@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Fix activity bar icon rendering by using an SVG container icon.
+- Fix webview header logo rendering by injecting a resolved webview asset URI.
+
 ## 1.0.2
 
 - Bump extension version to 1.0.2.

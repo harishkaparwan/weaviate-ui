@@ -2,7 +2,7 @@
   "name": "weaviate-db",
   "displayName": "Weaviate DB",
   "description": "Browse Weaviate schemas, objects, imports, and GraphQL queries from an editor webview.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "harishkaparwan",
   "license": "MIT",
   "repository": {
@@ -36,7 +36,7 @@
         {
           "id": "weaviate-ui",
           "title": "Weaviate DB",
-          "icon": "media/weaviate-db-logo.png"
+          "icon": "media/activitybar.svg"
         }
       ]
     },
