@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bolt logo">
+  <defs>
+    <linearGradient id="bg" x1="50" y1="32" x2="472" y2="494" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A78FF"/>
+      <stop offset="0.52" stop-color="#6A5CFF"/>
+      <stop offset="1" stop-color="#5347F4"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="174" y1="84" x2="336" y2="425" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DFDCFF"/>
+    </linearGradient>
+    <radialGradient id="sheen" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(152 108) rotate(33) scale(234 182)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="20" y="20" width="472" height="472" rx="112" fill="url(#bg)"/>
+  <rect x="20" y="20" width="472" height="472" rx="112" fill="url(#sheen)"/>
+
+  <path d="M290 87L211 258H286L242 420L333 224H257L290 87Z" fill="url(#bolt)"/>
+  <path d="M290 87L211 258H286L242 420L333 224H257L290 87Z" fill="none" stroke="#EFEFFF" stroke-opacity="0.65" stroke-width="7" stroke-linejoin="round"/>
+
+  <path d="M287 87L255 226H309L277 291H250L287 87Z" fill="#2D248A" fill-opacity="0.26"/>
+</svg>

@@ -169,7 +169,7 @@ function SchemaIcon({ className }: { className?: string }) {
 function App() {
   const brandLogoSrc = typeof window !== 'undefined' && window.__WEAVIATE_LOGO_URI__
     ? window.__WEAVIATE_LOGO_URI__
-    : 'weaviate-db-logo.png'
+    : 'weaviate-db-logo.svg'
 
   const [endpoint, setEndpoint] = useState(defaultEnvEndpoint || defaultEndpoint)
   const [connectionType, setConnectionType] = useState<ConnectionType>(defaultEnvEndpoint ? 'cluster' : 'local')
