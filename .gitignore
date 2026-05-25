@@ -10,16 +10,19 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+magic-portfolio/
 chrome-extension/
 chrome-extension/build
 chrome-extension/*.zip
-# Keep only the GitHub package manifest tracked in vscode-extension
-vscode-extension/*
-!vscode-extension/package.json
-vscode-extension/package.local.json
-vscode-extension/node_modules
-vscode-extension/media
+# VS Code extension generated files
+vscode-extension/node_modules/
+vscode-extension/media/
 vscode-extension/*.vsix
+vscode-extension/package.local.json
+
+# Tauri generated/build files
+src-tauri/target/
+src-tauri/gen/
 *.local
 LOCAL_SETUP.local.md
 datasetup.md
