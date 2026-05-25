@@ -23,6 +23,9 @@
     "extension:package": "npm run build && npm run extension:sync && npm --prefix vscode-extension run package",
     "extension:publish:vscode": "npm run build && npm run extension:sync && npm --prefix vscode-extension run publish:vscode",
     "extension:publish:windsurf": "npm run build && npm run extension:sync && npm --prefix vscode-extension run publish:open-vsx",
+    "extension:use:local": "cp vscode-extension/package.local.json vscode-extension/package.json",
+    "extension:save:local": "cp vscode-extension/package.json vscode-extension/package.local.json",
+    "extension:use:github": "git restore --source=HEAD --worktree --staged vscode-extension/package.json || git restore --source=HEAD --worktree vscode-extension/package.json",
     "lint": "eslint .",
     "preview": "vite preview"
   },

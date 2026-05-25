@@ -2,6 +2,45 @@
 
 A lightweight React workbench for browsing a local or remote Weaviate instance. It can inspect schema classes, view objects, prepare inserts from JSON or CSV, and run GraphQL queries from a focused browser UI.
 
+## Downloads
+
+Extension downloads:
+
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db
+- Open VSX: https://open-vsx.org/extension/harishkaparwan/weaviate-db
+- Chrome extension source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
+
+Chrome extension install:
+
+```text
+Build from chrome-extension/build and load it from chrome://extensions with Developer mode enabled.
+```
+
+Desktop app downloads:
+
+- macOS DMG: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.dmg
+- macOS App ZIP: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip
+- Windows EXE: https://harishkaparwan.github.io/weaviate-ui/desktop/win/weaviate-ui_0.1.0_x64-setup.exe
+
+Container image references:
+
+- Docker Hub: https://hub.docker.com/r/harishkaparwan/weaviate-ui
+- GHCR: https://github.com/harishkaparwan/weaviate-ui/pkgs/container/weaviate-ui
+
+Run with Podman:
+
+```bash
+podman pull ghcr.io/harishkaparwan/weaviate-ui:latest
+podman run --rm -p 8080:80 ghcr.io/harishkaparwan/weaviate-ui:latest
+```
+
+Run with Docker:
+
+```bash
+docker pull harishkaparwan/weaviate-ui:latest
+docker run --rm -p 8080:80 harishkaparwan/weaviate-ui:latest
+```
+
 ## Prerequisite: Start Weaviate First
 
 Before installing or opening Weaviate UI, make sure a Weaviate database is running. You can use an existing local or remote Weaviate server, or start one with Docker or Podman.
@@ -28,6 +67,14 @@ Then use `http://localhost:8083` in the connection panel. If you already have We
 - Prepare batch inserts from JSON or CSV
 - Run GraphQL queries against `/v1/graphql`
 - Run as a local Vite app, a public OCI container image, or a VS Code webview extension
+
+## Screenshots
+
+![Weaviate DB insert workflow](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/screenshot-1-1280x800.jpg)
+
+![Weaviate DB object browser](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/screenshot-2-1280x800.jpg)
+
+![Weaviate DB cluster connection](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/weaver-cluser-image.jpg)
 
 ## Local Development
 
@@ -145,7 +192,7 @@ npm run build
 npm run extension:sync
 ```
 
-Then open `vscode-extension/` in VS Code and run the extension host. Use the command palette command `Weaviate UI: Open Workbench`.
+Then open `vscode-extension/` in VS Code and run the extension host. Use the command palette command `Weaviate DB: Open Workbench`.
 
 ## Chrome Extension
 

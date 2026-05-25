@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weaviate DB | Plugin Home</title>
+    <style>
+      :root {
+        --bg: #040b1e;
+        --bg-soft: #0a1839;
+        --panel: rgba(12, 26, 62, 0.74);
+        --panel-border: rgba(132, 160, 216, 0.26);
+        --text: #dce7ff;
+        --muted: #95a9cf;
+        --accent: #10d6bb;
+        --chip: rgba(31, 59, 111, 0.62);
+        --button: #233457;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Manrope", "Segoe UI", system-ui, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(80rem 40rem at 85% -10%, rgba(24, 203, 220, 0.16), transparent 62%),
+          radial-gradient(70rem 36rem at -10% 20%, rgba(27, 95, 210, 0.25), transparent 54%),
+          linear-gradient(180deg, #02081b 0%, #040b1e 48%, #020617 100%);
+      }
+
+      .wrap {
+        width: min(1220px, 94vw);
+        margin: 0 auto;
+        padding: 64px 0 80px;
+      }
+
+      .hero {
+        text-align: center;
+        max-width: 860px;
+        margin: 0 auto 48px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 4.6rem);
+        line-height: 0.98;
+        letter-spacing: -0.03em;
+        font-weight: 800;
+      }
+
+      .hero p {
+        margin: 22px auto 0;
+        max-width: 680px;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2.2vw, 1.9rem);
+        line-height: 1.45;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        background: linear-gradient(160deg, var(--panel), rgba(9, 20, 50, 0.84));
+        border: 1px solid var(--panel-border);
+        border-radius: 26px;
+        padding: 28px 24px 22px;
+        min-height: 420px;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 18px;
+        box-shadow: 0 26px 60px rgba(3, 8, 24, 0.34);
+      }
+
+      .icon {
+        font-size: 2.7rem;
+        line-height: 1;
+      }
+
+      .badge {
+        justify-self: start;
+        border-radius: 999px;
+        padding: 7px 12px;
+        color: #70b5ff;
+        background: var(--chip);
+        font-size: 0.83rem;
+        font-weight: 700;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 2rem;
+        line-height: 1.06;
+        letter-spacing: -0.02em;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.03rem;
+        line-height: 1.45;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 62px;
+        border: 0;
+        border-radius: 18px;
+        padding: 0 18px;
+        color: #e7f1ff;
+        background: var(--button);
+        text-decoration: none;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .cta:hover {
+        filter: brightness(1.09);
+      }
+
+      .code-box {
+        border: 1px solid rgba(95, 130, 200, 0.34);
+        border-radius: 16px;
+        padding: 14px 16px;
+        color: #cce0ff;
+        background: rgba(2, 12, 34, 0.88);
+        font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+        font-size: 0.97rem;
+        line-height: 1.5;
+      }
+
+      .docker-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 56px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.02rem;
+      }
+
+      .sub-link {
+        color: #8db9ff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+
+      .points {
+        margin: 38px 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px 28px;
+        color: #c4d2ec;
+        font-size: 1.05rem;
+      }
+
+      .points span {
+        color: var(--accent);
+        margin-right: 8px;
+      }
+
+      @media (max-width: 1100px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .wrap {
+          width: min(680px, 92vw);
+          padding: 34px 0 54px;
+        }
+
+        .hero {
+          margin-bottom: 28px;
+          text-align: left;
+        }
+
+        .hero h1 {
+          line-height: 1.03;
+        }
+
+        .hero p {
+          margin-left: 0;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .card {
+          min-height: 0;
+          padding: 22px 18px;
+          border-radius: 20px;
+        }
+
+        .points {
+          justify-content: flex-start;
+          margin-top: 26px;
+          font-size: 0.98rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <h1>One workbench.<br />Four ways to use it.</h1>
+        <p>Choose the plugin experience that fits your flow, from sidebar coding to browser testing and self-hosted deployment.</p>
+      </section>
+
+      <section class="grid" aria-label="Product options">
+        <article class="card">
+          <div class="icon" aria-hidden="true">🧩</div>
+          <div class="badge">Most popular</div>
+          <h2>VS Code Extension</h2>
+          <p>Full workbench in your editor with schema explorer, batch import from workspace files, and one-click query workflows.</p>
+          <a class="cta" href="https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db" target="_blank" rel="noopener noreferrer">Install from Marketplace</a>
+          <a class="sub-link" href="https://open-vsx.org/extension/harishkaparwan/weaviate-db" target="_blank" rel="noopener noreferrer">Also available on Open VSX</a>
+        </article>
+
+        <article class="card">
+          <div class="icon" aria-hidden="true">🌐</div>
+          <h2>Chrome Extension</h2>
+          <p>Launch Weaviate tools while browsing docs and APIs. Keep context and run quick checks without tab switching.</p>
+          <a class="cta" href="https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension" target="_blank" rel="noopener noreferrer">Open Chrome Extension Source</a>
+        </article>
+
+        <article class="card">
+          <div class="icon" aria-hidden="true">🖥️</div>
+          <h2>Desktop App</h2>
+          <p>Standalone app for non-editor users, multi-window usage, and persistent data exploration across teams.</p>
+          <a class="cta" href="/desktop/mac/weaviate-ui_0.1.0_aarch64.dmg">Download for macOS (DMG)</a>
+          <a class="sub-link" href="/desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip">Download macOS App (ZIP)</a>
+          <a class="sub-link" href="/desktop/win/weaviate-ui_0.1.0_x64-setup.exe">Download for Windows (EXE)</a>
+        </article>
+
+        <article class="card">
+          <div class="icon" aria-hidden="true">🐳</div>
+          <h2>Docker Image</h2>
+          <p>One-command self-hosted UI for servers, Kubernetes, and fully offline environments.</p>
+          <div class="code-box">podman pull ghcr.io/harishkaparwan/weaviate-ui:latest<br />podman run --rm -p 8080:80 ghcr.io/harishkaparwan/weaviate-ui:latest</div>
+          <a class="docker-link" href="https://github.com/harishkaparwan/weaviate-ui/pkgs/container/weaviate-ui" target="_blank" rel="noopener noreferrer">View on GHCR</a>
+        </article>
+      </section>
+
+      <div class="points" aria-label="Highlights">
+        <div><span>✓</span>Self-hosted</div>
+        <div><span>✓</span>Native sidebar tree view</div>
+        <div><span>✓</span>Batch import and code generation</div>
+      </div>
+    </main>
+  </body>
+</html>

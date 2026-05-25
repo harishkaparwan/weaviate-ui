@@ -10,12 +10,19 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+chrome-extension/
 chrome-extension/build
 chrome-extension/*.zip
+# Keep only the GitHub package manifest tracked in vscode-extension
+vscode-extension/*
+!vscode-extension/package.json
+vscode-extension/package.local.json
 vscode-extension/node_modules
 vscode-extension/media
 vscode-extension/*.vsix
 *.local
+LOCAL_SETUP.local.md
+datasetup.md
 
 # Editor directories and files
 .vscode/*

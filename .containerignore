@@ -4,6 +4,13 @@ dist-ssr
 .git
 .github
 .vscode
+src-tauri/target
+magic-portfolio/node_modules
+magic-portfolio/.next
+magic-portfolio/out
+chrome-extension/build
+chrome-extension/node_modules
+public/desktop
 vscode-extension/node_modules
 vscode-extension/media
 vscode-extension/*.vsix

@@ -45,6 +45,8 @@ type GraphQlResponse = {
 }
 
 type ViewTab = 'overview' | 'schema' | 'objects' | 'insert' | 'graphql' | 'raw'
+type InsertMode = 'schema' | 'object' | 'batch'
+type ConnectionType = 'local' | 'cluster'
 
 type InsertResult = {
   success: number
@@ -53,88 +55,124 @@ type InsertResult = {
 }
 
 const defaultEndpoint = 'http://localhost:8083'
+const defaultEnvEndpoint = (import.meta.env.VITE_WEAVIATE_URL as string | undefined) ?? ''
+const defaultEnvApiKey = (import.meta.env.VITE_WEAVIATE_API_KEY as string | undefined) ?? ''
 
-const demoSchema: WeaviateSchema = {
-  classes: [
-    {
-      class: 'Article',
-      description: 'Sample articles for trying the workbench after installation.',
-      vectorizer: 'text2vec-openai',
-      vectorIndexType: 'hnsw',
-      replicationConfig: { factor: 1 },
-      properties: [
-        { name: 'title', dataType: ['text'], description: 'Article title', tokenization: 'word' },
-        { name: 'summary', dataType: ['text'], description: 'Short abstract', tokenization: 'word' },
-        { name: 'category', dataType: ['text'], description: 'Editorial category', tokenization: 'field' },
-        { name: 'publishedAt', dataType: ['date'], description: 'Publication timestamp' },
-      ],
-    },
-    {
-      class: 'Product',
-      description: 'Sample product catalog records.',
-      vectorizer: 'text2vec-transformers',
-      vectorIndexType: 'hnsw',
-      replicationConfig: { factor: 1 },
-      properties: [
-        { name: 'name', dataType: ['text'], description: 'Product name', tokenization: 'word' },
-        { name: 'description', dataType: ['text'], description: 'Searchable product description', tokenization: 'word' },
-        { name: 'price', dataType: ['number'], description: 'Unit price' },
-        { name: 'inStock', dataType: ['boolean'], description: 'Availability flag' },
-      ],
-    },
-  ],
+type NativeHttpRequest = {
+  url: string
+  method: string
+  headers: Record<string, string>
+  body?: string
 }
 
-const demoObjects: Record<string, WeaviateObject[]> = {
-  Article: [
-    {
-      id: 'demo-article-001',
-      class: 'Article',
-      properties: {
-        title: 'Building a local vector search workbench',
-        summary: 'A compact workflow for inspecting schema, objects, and GraphQL queries.',
-        category: 'engineering',
-        publishedAt: '2026-05-21T14:00:00.000Z',
-      },
-    },
-    {
-      id: 'demo-article-002',
-      class: 'Article',
-      properties: {
-        title: 'Understanding semantic imports',
-        summary: 'How JSON and CSV records map into Weaviate batch objects.',
-        category: 'data',
-        publishedAt: '2026-05-20T09:30:00.000Z',
-      },
-    },
-  ],
-  Product: [
-    {
-      id: 'demo-product-001',
-      class: 'Product',
-      properties: {
-        name: 'Vector Notebook',
-        description: 'A sample catalog item with searchable text fields.',
-        price: 24.99,
-        inStock: true,
-      },
-    },
-    {
-      id: 'demo-product-002',
-      class: 'Product',
-      properties: {
-        name: 'Schema Explorer',
-        description: 'A demo object for testing object browsing.',
-        price: 49,
-        inStock: false,
-      },
-    },
-  ],
+type NativeHttpResponse = {
+  ok: boolean
+  status: number
+  statusText: string
+  headers: Record<string, string>
+  body: string
+  error?: string
+}
+
+type TauriInvoke = <T>(command: string, args?: Record<string, unknown>) => Promise<T>
+
+declare global {
+  interface Window {
+    __TAURI_INTERNALS__?: unknown
+  }
+}
+
+let tauriInvoke: TauriInvoke | null = null
+
+function isTauriRuntime() {
+  return typeof window !== 'undefined' && typeof window.__TAURI_INTERNALS__ !== 'undefined'
+}
+
+function normalizeHeaders(headers: HeadersInit | undefined): Record<string, string> {
+  if (!headers) return {}
+  if (headers instanceof Headers) {
+    return Object.fromEntries(headers.entries())
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers)
+  }
+  return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key, String(value)]))
+}
+
+function normalizeBody(body: BodyInit | null | undefined): string | undefined {
+  if (body == null) return undefined
+  if (typeof body === 'string') return body
+  return String(body)
+}
+
+async function getTauriInvoke(): Promise<TauriInvoke | null> {
+  if (!isTauriRuntime()) {
+    return null
+  }
+  if (tauriInvoke) {
+    return tauriInvoke
+  }
+  const module = await import('@tauri-apps/api/core')
+  tauriInvoke = module.invoke as TauriInvoke
+  return tauriInvoke
+}
+
+function shouldUseNativeBridge(requestUrl: string) {
+  return /^https:\/\//i.test(requestUrl) && !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?/i.test(requestUrl)
+}
+
+async function weaviateFetch(input: RequestInfo | URL, init?: RequestInit) {
+  const requestUrl = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url
+
+  if (!shouldUseNativeBridge(requestUrl)) {
+    return fetch(input, init)
+  }
+
+  const invoke = await getTauriInvoke()
+  if (!invoke) {
+    return fetch(input, init)
+  }
+
+  const request: NativeHttpRequest = {
+    url: requestUrl,
+    method: init?.method ?? 'GET',
+    headers: normalizeHeaders(init?.headers),
+    body: normalizeBody(init?.body),
+  }
+
+  const result = await invoke<NativeHttpResponse>('native_http_fetch', { request })
+  if (result.error) {
+    throw new Error(result.error)
+  }
+
+  return new Response(result.body ?? '', {
+    status: result.status,
+    statusText: result.statusText,
+    headers: result.headers,
+  })
+}
+
+function SchemaIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <g stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5.7" rx="6.6" ry="2.3" />
+        <path d="M5.4 5.7v3.7c0 1.2 2.95 2.3 6.6 2.3s6.6-1.1 6.6-2.3V5.7" />
+        <path d="M5.4 9.4v3.7c0 1.2 2.95 2.3 6.6 2.3s6.6-1.1 6.6-2.3V9.4" />
+        <path d="M5.4 13.1v3.7c0 1.2 2.95 2.3 6.6 2.3s6.6-1.1 6.6-2.3v-3.7" />
+      </g>
+    </svg>
+  )
 }
 
 function App() {
-  const [endpoint, setEndpoint] = useState(defaultEndpoint)
-  const [schema, setSchema] = useState<WeaviateSchema | null>(demoSchema)
+  const [endpoint, setEndpoint] = useState(defaultEnvEndpoint || defaultEndpoint)
+  const [connectionType, setConnectionType] = useState<ConnectionType>(defaultEnvEndpoint ? 'cluster' : 'local')
+  const [apiKey, setApiKey] = useState(defaultEnvApiKey)
+  const [showApiKey, setShowApiKey] = useState(false)
+  const [targetClass, setTargetClass] = useState('')
+  const [classSearch, setClassSearch] = useState('')
+  const [schema, setSchema] = useState<WeaviateSchema | null>(null)
   const [selectedClass, setSelectedClass] = useState<string>('')
   const [activeTab, setActiveTab] = useState<ViewTab>('overview')
   const [objects, setObjects] = useState<WeaviateObject[]>([])
@@ -148,44 +186,102 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [insertJson, setInsertJson] = useState('')
+  const [insertMode, setInsertMode] = useState<InsertMode>('batch')
   const [insertFileName, setInsertFileName] = useState('')
   const [insertLoading, setInsertLoading] = useState(false)
   const [insertResult, setInsertResult] = useState<InsertResult | null>(null)
   const [insertError, setInsertError] = useState('')
-  const [isDemoMode, setIsDemoMode] = useState(true)
 
   const classes = useMemo(() => schema?.classes ?? [], [schema])
-  const activeClass = classes.find((item) => item.class === selectedClass) ?? classes[0]
-  const baseUrl = endpoint.trim().replace(/\/$/, '')
-
-  function loadDemoWorkspace() {
-    setIsDemoMode(true)
-    setSchema(demoSchema)
-    setSelectedClass('')
-    setActiveTab('overview')
-    setError('')
-    setObjects([])
-    const firstClass = demoSchema.classes?.[0]
-    if (firstClass) {
-      prepareClassWorkspace(firstClass)
+  const filteredClasses = useMemo(() => {
+    let next = classes
+    if (targetClass.trim()) {
+      next = next.filter((item) => item.class.toLowerCase() === targetClass.trim().toLowerCase())
     }
+    if (classSearch.trim()) {
+      const search = classSearch.trim().toLowerCase()
+      next = next.filter((item) => item.class.toLowerCase().includes(search))
+    }
+    return next
+  }, [classes, targetClass, classSearch])
+  const activeClass = classes.find((item) => item.class === selectedClass) ?? classes[0]
+  const isClusterConnection = connectionType === 'cluster'
+  const baseUrl = useMemo(() => {
+    const raw = endpoint.trim()
+    if (!raw) return defaultEndpoint
+    const localHostPattern = /^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i
+    const withProtocol = /^https?:\/\//i.test(raw) ? raw : `${localHostPattern.test(raw) ? 'http' : 'https'}://${raw}`
+    return withProtocol.replace(/\/$/, '').replace(/\/v1(?:\/schema|\/objects|\/batch\/objects|\/graphql)?$/i, '')
+  }, [endpoint])
+
+  const baseHostname = useMemo(() => {
+    try {
+      return new URL(baseUrl).hostname.toLowerCase()
+    } catch {
+      return ''
+    }
+  }, [baseUrl])
+
+  const requestHeaders = useMemo<Record<string, string>>(() => ({
+    ...(isClusterConnection && apiKey.trim()
+      ? {
+          Authorization: `Bearer ${apiKey.trim()}`,
+          'X-Weaviate-Api-Key': apiKey.trim(),
+        }
+      : {}),
+  }), [isClusterConnection, apiKey])
+
+  function toUserError(err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unable to connect to Weaviate'
+    if (isClusterConnection && message.includes('Weaviate returned 404')) {
+      return `Weaviate returned 404 Not Found. This usually means the cluster endpoint is incorrect. Use your cluster REST host (example: https://<cluster-id>.c0.<region>.gcp.weaviate.cloud), not the console URL.`
+    }
+    if (/Failed to fetch|Load failed|NetworkError/i.test(message)) {
+      return isClusterConnection
+        ? isTauriRuntime()
+          ? 'Network request failed from desktop app. Verify cluster URL/API key and internet connectivity.'
+          : 'Failed to fetch. This is usually a CORS restriction from the cluster origin policy. Endpoint/key may be valid, but browser requests are blocked.'
+        : 'Failed to fetch. Check local endpoint and whether Weaviate is running.'
+    }
+    return message
   }
 
   async function loadSchema() {
-    setIsDemoMode(false)
     setLoading(true)
     setError('')
 
     try {
-      const response = await fetch(`${baseUrl}/v1/schema`)
+      if (isClusterConnection && !apiKey.trim()) {
+        throw new Error('API key is required for Cluster connection type.')
+      }
+      if (isClusterConnection) {
+        const raw = endpoint.trim().toLowerCase()
+        if (raw.endsWith('.gc')) {
+          throw new Error('Cluster endpoint looks incomplete. Did you mean ...gcp.weaviate.cloud?')
+        }
+        if (raw.includes('cluster-id') || raw.includes('<cluster-id>') || raw.includes('region') || raw.includes('<region>')) {
+          throw new Error('You are using the example host. Replace it with your real cluster REST host from Weaviate Cloud.')
+        }
+        if (baseHostname === 'console.weaviate.cloud') {
+          throw new Error('Use your cluster REST endpoint host, not console.weaviate.cloud.')
+        }
+        if (!baseHostname.endsWith('.weaviate.cloud')) {
+          throw new Error('Cluster host must end with .weaviate.cloud and include your real cluster id and region.')
+        }
+      }
+      const className = targetClass.trim()
+      const response = await weaviateFetch(className ? `${baseUrl}/v1/schema/${encodeURIComponent(className)}` : `${baseUrl}/v1/schema`, {
+        headers: requestHeaders,
+      })
 
       if (!response.ok) {
         throw new Error(`Weaviate returned ${response.status} ${response.statusText}`)
       }
 
-      const data = (await response.json()) as WeaviateSchema
+      const payload = (await response.json()) as WeaviateSchema | WeaviateClass
+      const data = className ? ({ classes: [payload as WeaviateClass] } satisfies WeaviateSchema) : (payload as WeaviateSchema)
       setSchema(data)
-      setSelectedClass('')
+      setSelectedClass(data.classes?.[0]?.class ?? '')
       setActiveTab('overview')
       if (data.classes?.[0]) {
         prepareClassWorkspace(data.classes[0])
@@ -193,7 +289,7 @@ function App() {
     } catch (err) {
       setSchema(null)
       setSelectedClass('')
-      setError(err instanceof Error ? err.message : 'Unable to connect to Weaviate')
+      setError(toUserError(err))
     } finally {
       setLoading(false)
     }
@@ -205,17 +301,13 @@ function App() {
       return
     }
 
-    if (isDemoMode) {
-      setObjects((demoObjects[className] ?? []).slice(0, objectLimit))
-      setObjectsError('')
-      return
-    }
-
     setObjectsLoading(true)
     setObjectsError('')
 
     try {
-      const response = await fetch(`${baseUrl}/v1/objects?class=${encodeURIComponent(className)}&limit=${objectLimit}`)
+      const response = await weaviateFetch(`${baseUrl}/v1/objects?class=${encodeURIComponent(className)}&limit=${objectLimit}`, {
+        headers: requestHeaders,
+      })
 
       if (!response.ok) {
         throw new Error(`Weaviate returned ${response.status} ${response.statusText}`)
@@ -231,10 +323,9 @@ function App() {
     }
   }
 
-  function buildInsertTemplate(item: WeaviateClass | undefined) {
-    if (!item) return '{}'
+  function buildPropertiesTemplate(item: WeaviateClass | undefined) {
     const sample: Record<string, unknown> = {}
-    for (const property of item.properties ?? []) {
+    for (const property of item?.properties ?? []) {
       const type = property.dataType?.[0] ?? 'text'
       if (type === 'int' || type === 'number') sample[property.name] = 0
       else if (type === 'boolean') sample[property.name] = false
@@ -242,7 +333,58 @@ function App() {
       else if (type.startsWith('text[]') || type.endsWith('[]')) sample[property.name] = []
       else sample[property.name] = ''
     }
-    return JSON.stringify([sample], null, 2)
+    return sample
+  }
+
+  function buildInsertTemplate(mode: InsertMode, item: WeaviateClass | undefined) {
+    if (mode === 'schema') {
+      return JSON.stringify(
+        {
+          class: 'MyClass',
+          description: 'Describe this class',
+          vectorizer: 'none',
+          properties: [
+            {
+              name: 'title',
+              dataType: ['text'],
+              description: 'Sample text field',
+            },
+          ],
+        },
+        null,
+        2,
+      )
+    }
+
+    if (mode === 'object') {
+      return JSON.stringify(
+        {
+          class: item?.class ?? 'MyClass',
+          properties: buildPropertiesTemplate(item),
+        },
+        null,
+        2,
+      )
+    }
+
+    if (!item) {
+      return JSON.stringify(
+        {
+          objects: [
+            {
+              class: 'MyClass',
+              properties: {
+                title: 'Sample title',
+              },
+            },
+          ],
+        },
+        null,
+        2,
+      )
+    }
+
+    return JSON.stringify([buildPropertiesTemplate(item)], null, 2)
   }
 
   function buildGraphQlQuery(item: WeaviateClass) {
@@ -261,7 +403,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
   }
 
   function prepareClassWorkspace(item: WeaviateClass) {
-    setInsertJson(buildInsertTemplate(item))
+    setInsertJson(buildInsertTemplate(insertMode, item))
     setInsertFileName('')
     setInsertResult(null)
     setInsertError('')
@@ -335,69 +477,106 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
     const text = await file.text()
     if (file.name.toLowerCase().endsWith('.csv')) {
       const rows = parseCsv(text)
-      setInsertJson(JSON.stringify(rows, null, 2))
+      if (insertMode === 'object') {
+        setInsertJson(JSON.stringify(rows[0] ?? {}, null, 2))
+      } else {
+        setInsertJson(JSON.stringify(rows, null, 2))
+      }
     } else {
       setInsertJson(text)
     }
   }
 
   async function submitInsert() {
-    if (!activeClass) return
-
-    if (isDemoMode) {
-      try {
-        const parsed = JSON.parse(insertJson || '[]') as unknown
-        const records = Array.isArray(parsed) ? parsed : [parsed]
-        setInsertResult({ success: records.length, failed: 0, errors: [] })
-        setInsertError('')
-      } catch (err) {
-        setInsertResult(null)
-        setInsertError(err instanceof Error ? err.message : 'Unable to parse objects')
-      }
-      return
-    }
-
     setInsertLoading(true)
     setInsertError('')
     setInsertResult(null)
 
     try {
-      const parsed = JSON.parse(insertJson || '[]') as unknown
-      const records = (Array.isArray(parsed) ? parsed : [parsed]) as Record<string, unknown>[]
-      if (!records.length) throw new Error('No objects to insert.')
+      const parsed = JSON.parse(insertJson || '{}') as unknown
+      let response: Response
 
-      const payload = {
-        objects: records.map((record) => ({
-          class: activeClass.class,
-          properties: record,
-        })),
+      if (insertMode === 'schema') {
+        response = await weaviateFetch(`${baseUrl}/v1/schema`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...requestHeaders },
+          body: JSON.stringify(parsed),
+        })
+      } else if (insertMode === 'object') {
+        const record = parsed as Record<string, unknown>
+        const payload =
+          record.class && record.properties
+            ? record
+            : {
+                class: activeClass?.class,
+                properties: record,
+              }
+
+        if (!payload.class) {
+          throw new Error('Class is required for object insert. Select a class or include class in JSON.')
+        }
+
+        response = await weaviateFetch(`${baseUrl}/v1/objects`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...requestHeaders },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        const batchInput = parsed as Record<string, unknown> | Array<Record<string, unknown>>
+        let payload: { objects: Array<Record<string, unknown>> }
+
+        if (!Array.isArray(batchInput) && Array.isArray((batchInput as { objects?: unknown }).objects)) {
+          payload = { objects: (batchInput as { objects: Array<Record<string, unknown>> }).objects }
+        } else {
+          const rows = (Array.isArray(batchInput) ? batchInput : [batchInput]) as Array<Record<string, unknown>>
+          if (!rows.length) throw new Error('No objects to insert.')
+          payload = {
+            objects: rows.map((row) => {
+              if (row.class && row.properties) return row
+              if (!activeClass?.class) {
+                throw new Error('Class is required for batch insert. Select a class or use {"objects":[{"class":"...","properties":{...}}]} format.')
+              }
+              return {
+                class: activeClass.class,
+                properties: row,
+              }
+            }),
+          }
+        }
+
+        response = await weaviateFetch(`${baseUrl}/v1/batch/objects`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...requestHeaders },
+          body: JSON.stringify(payload),
+        })
       }
-
-      const response = await fetch(`${baseUrl}/v1/batch/objects`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
 
       if (!response.ok) {
         throw new Error(`Weaviate returned ${response.status} ${response.statusText}`)
       }
 
-      const data = (await response.json()) as Array<{ result?: { status?: string; errors?: { error?: Array<{ message?: string }> } } }>
-      const errors: string[] = []
-      let success = 0
-      let failed = 0
-      for (const item of data) {
-        if (item.result?.status === 'SUCCESS') {
-          success += 1
-        } else {
-          failed += 1
-          for (const err of item.result?.errors?.error ?? []) {
-            if (err.message) errors.push(err.message)
+      if (insertMode === 'batch') {
+        const data = (await response.json()) as Array<{ result?: { status?: string; errors?: { error?: Array<{ message?: string }> } } }>
+        const errors: string[] = []
+        let success = 0
+        let failed = 0
+        for (const item of data) {
+          if (item.result?.status === 'SUCCESS') {
+            success += 1
+          } else {
+            failed += 1
+            for (const err of item.result?.errors?.error ?? []) {
+              if (err.message) errors.push(err.message)
+            }
           }
         }
+        setInsertResult({ success, failed, errors })
+      } else {
+        setInsertResult({ success: 1, failed: 0, errors: [] })
+        if (insertMode === 'schema') {
+          void loadSchema()
+        }
       }
-      setInsertResult({ success, failed, errors })
     } catch (err) {
       setInsertError(err instanceof Error ? err.message : 'Unable to insert objects')
     } finally {
@@ -406,34 +585,16 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
   }
 
   async function runGraphQlQuery() {
-    if (isDemoMode) {
-      const className = activeClass?.class ?? 'Article'
-      setGraphqlResult({
-        data: {
-          Get: {
-            [className]: (demoObjects[className] ?? []).map((object) => ({
-              ...object.properties,
-              _additional: {
-                id: object.id,
-                distance: 0.12,
-              },
-            })),
-          },
-        },
-      })
-      setGraphqlError('')
-      return
-    }
-
     setGraphqlLoading(true)
     setGraphqlError('')
     setGraphqlResult(null)
 
     try {
-      const response = await fetch(`${baseUrl}/v1/graphql`, {
+      const response = await weaviateFetch(`${baseUrl}/v1/graphql`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...requestHeaders,
         },
         body: JSON.stringify({ query: graphqlQuery }),
       })
@@ -454,9 +615,9 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
     <main className="compass-shell">
       <aside className="left-rail">
         <div className="brand-block">
-          <span className="brand-mark">W</span>
+          <img className="brand-mark" src="weaviate-db-logo.png" alt="Weaviate DB logo" />
           <div>
-            <strong>Weaver Compass</strong>
+            <strong>Weaviate DB</strong>
             <p>Vector DB Workbench</p>
           </div>
         </div>
@@ -468,6 +629,36 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
             void loadSchema()
           }}
         >
+          <label>Connection Type</label>
+          <div className="connection-type-group" role="radiogroup" aria-label="Connection Type">
+            <label className="connection-type-option">
+              <input
+                type="radio"
+                name="connectionType"
+                value="local"
+                checked={connectionType === 'local'}
+                onChange={() => {
+                  setConnectionType('local')
+                  if (!endpoint.trim() || endpoint.includes('weaviate.cloud')) {
+                    setEndpoint(defaultEndpoint)
+                  }
+                }}
+              />
+              <span>Local</span>
+            </label>
+            <label className="connection-type-option">
+              <input
+                type="radio"
+                name="connectionType"
+                value="cluster"
+                checked={connectionType === 'cluster'}
+                onChange={() => {
+                  setConnectionType('cluster')
+                }}
+              />
+              <span>Cluster</span>
+            </label>
+          </div>
           <label htmlFor="endpoint">Connection URI</label>
           <input
             id="endpoint"
@@ -475,22 +666,65 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
             onChange={(event) => setEndpoint(event.target.value)}
             placeholder={defaultEndpoint}
           />
+          {isClusterConnection ? (
+            <>
+              <label htmlFor="apiKey">API Key</label>
+              <div className="input-with-action">
+                <input
+                  id="apiKey"
+                  type={showApiKey ? 'text' : 'password'}
+                  value={apiKey}
+                  onChange={(event) => setApiKey(event.target.value)}
+                  placeholder="Enter Weaviate Cloud API key"
+                  autoComplete="off"
+                />
+                <button type="button" className="icon-btn" onClick={() => setShowApiKey((value) => !value)}>
+                  {showApiKey ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </>
+          ) : null}
           <button type="submit" disabled={loading}>
             {loading ? 'Connecting...' : 'Connect'}
           </button>
+          <label htmlFor="targetClass">Target Class (optional)</label>
+          <select id="targetClass" value={targetClass} onChange={(event) => setTargetClass(event.target.value)}>
+            <option value="">All Classes</option>
+            {classes.map((item) => (
+              <option key={item.class} value={item.class}>
+                {item.class}
+              </option>
+            ))}
+          </select>
+          <p className="connection-help">
+            Leave empty or choose <strong>All Classes</strong> to load everything. Selecting one class loads only its schema and objects.
+          </p>
+          <p className="connection-help">
+            {isClusterConnection
+              ? 'Cluster mode sends your API key as Authorization Bearer and X-Weaviate-Api-Key automatically.'
+              : 'Local mode: connects directly without custom auth headers. You can also point it to a local proxy like http://localhost:8787.'}
+          </p>
+          {isClusterConnection ? (
+            <p className="connection-help">Expected cluster host format: https://&lt;cluster-id&gt;.c0.&lt;region&gt;.gcp.weaviate.cloud</p>
+          ) : null}
           {error ? <p className="error-message">{error}</p> : null}
-          <button className="secondary full-width" type="button" onClick={loadDemoWorkspace}>
-            Open bundled demo
-          </button>
         </form>
 
         <div className="nav-section">
-          <div className="nav-heading">
-            <span>Classes</span>
-            <strong>{classes.length}</strong>
+          <div className="nav-heading sidebar-heading">
+            <span>Classes ({classes.length}){targetClass ? ` • Filtered to: ${targetClass}` : ''}</span>
+            <button className="refresh-chip" type="button" onClick={() => void loadSchema()} disabled={loading || !schema}>
+              ↻
+            </button>
           </div>
+          <input
+            className="class-search"
+            value={classSearch}
+            onChange={(event) => setClassSearch(event.target.value)}
+            placeholder="Search classes..."
+          />
           <div className="class-tree">
-            {classes.map((item) => (
+            {filteredClasses.map((item) => (
               <button
                 key={item.class}
                 className={activeClass?.class === item.class ? 'active' : ''}
@@ -503,33 +737,41 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                   }
                 }}
               >
-                <span className="collection-icon">◆</span>
-                <span>
+                <span className="collection-icon">
+                  <SchemaIcon className="schema-icon" />
+                </span>
+                <span className="class-meta">
                   <strong>{item.class}</strong>
                   <small>{item.properties?.length ?? 0} fields</small>
                 </span>
               </button>
             ))}
             {!classes.length ? <p className="muted-note">Connect to load classes.</p> : null}
+            {classes.length && !filteredClasses.length ? <p className="muted-note">No classes match your filter.</p> : null}
           </div>
         </div>
       </aside>
 
       <section className="workspace">
         <header className="top-bar">
-          <div>
+          <div className="top-title-wrap">
             <p className="breadcrumb">localhost / weaviate / {activeClass?.class ?? 'no class selected'}</p>
-            <h1>{activeClass?.class ?? 'Weaviate Connection'}</h1>
+            <div className="title-row">
+              <span className="header-class-icon">
+                <SchemaIcon className="schema-icon" />
+              </span>
+              <h1 className="header-title">{activeClass?.class ?? 'Weaviate Connection'}</h1>
+            </div>
           </div>
           <div className="status-pills">
-            <span className={error ? 'offline' : schema ? 'online' : ''}>{error ? 'Offline' : isDemoMode ? 'Demo ready' : schema ? 'Connected' : 'Idle'}</span>
+            <span className={error ? 'offline' : schema ? 'online' : ''}>{error ? 'Offline' : schema ? 'Connected' : 'Idle'}</span>
             <span>{classes.reduce((total, item) => total + (item.properties?.length ?? 0), 0)} properties</span>
           </div>
         </header>
 
         <nav className="tabs">
           {(['overview', 'schema', 'objects', 'insert', 'graphql', 'raw'] as ViewTab[]).map((tab) => {
-            const disabled = tab !== 'overview' && !activeClass
+            const disabled = tab === 'schema' || tab === 'objects' || tab === 'graphql' || tab === 'raw' ? !activeClass : tab === 'insert' ? !schema : false
             return (
               <button
                 key={tab}
@@ -565,7 +807,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                     </article>
                     <article>
                       <span>Endpoint</span>
-                      <strong>{isDemoMode ? 'Bundled demo' : baseUrl}</strong>
+                      <strong>{baseUrl}</strong>
                     </article>
                   </div>
 
@@ -626,7 +868,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
               <p className="empty-state large">Click <strong>Connect</strong> to load the schema from Weaviate.</p>
             )}
           </section>
-        ) : activeClass ? (
+        ) : activeClass || activeTab === 'insert' ? (
           <section className="content-panel">
             {activeTab === 'schema' ? (
               <>
@@ -700,17 +942,42 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
               <div className="insert-grid">
                 <section>
                   <div className="panel-title">
-                    <h2>Insert into {activeClass.class}</h2>
+                    <h2>
+                      {insertMode === 'schema'
+                        ? 'Create schema/class'
+                        : insertMode === 'object'
+                          ? `Create object${activeClass ? ` in ${activeClass.class}` : ''}`
+                          : `Insert batch${activeClass ? ` into ${activeClass.class}` : ''}`}
+                    </h2>
                     <button type="button" onClick={() => void submitInsert()} disabled={insertLoading}>
-                      {insertLoading ? 'Inserting...' : 'Insert'}
+                      {insertLoading ? 'Submitting...' : insertMode === 'schema' ? 'Create' : insertMode === 'object' ? 'Create' : 'Insert'}
                     </button>
                   </div>
-                  <div className="toolbar">
+                  <div className="toolbar insert-toolbar">
+                    <label className="field-group mode-group">
+                      Mode
+                      <select
+                        value={insertMode}
+                        onChange={(event) => {
+                          const mode = event.target.value as InsertMode
+                          setInsertMode(mode)
+                          setInsertJson(buildInsertTemplate(mode, activeClass))
+                          setInsertFileName('')
+                          setInsertResult(null)
+                          setInsertError('')
+                        }}
+                      >
+                        <option value="schema">Schema/Class</option>
+                        <option value="object">Single object</option>
+                        <option value="batch">Batch objects</option>
+                      </select>
+                    </label>
                     <label className="file-input">
                       <span>Import file (CSV / JSON)</span>
                       <input
                         type="file"
                         accept=".csv,.json,application/json,text/csv"
+                        disabled={insertMode === 'schema'}
                         onChange={(event) => {
                           const file = event.target.files?.[0]
                           if (file) void handleInsertFile(file)
@@ -722,7 +989,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                       type="button"
                       className="secondary"
                       onClick={() => {
-                        setInsertJson(buildInsertTemplate(activeClass))
+                        setInsertJson(buildInsertTemplate(insertMode, activeClass))
                         setInsertFileName('')
                       }}
                     >
@@ -731,7 +998,11 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                     {insertFileName ? <span className="file-name">{insertFileName}</span> : null}
                   </div>
                   <p className="hint">
-                    Provide a JSON array of objects matching this class. CSV headers must match property names; array fields use <code>|</code> as a separator.
+                    {insertMode === 'schema'
+                      ? 'Provide a Weaviate class schema object and submit to /v1/schema.'
+                      : insertMode === 'object'
+                        ? 'Provide one object payload. Use either { class, properties } or plain properties JSON. CSV import uses the first row.'
+                        : 'Provide a JSON array of objects. CSV headers should match property names; array fields use | as separator.'}
                   </p>
                   <textarea value={insertJson} onChange={(event) => setInsertJson(event.target.value)} />
                 </section>
@@ -761,7 +1032,7 @@ ${propertyNames.slice(0, 5).map((name) => `      ${name}`).join('\n') || '      
                       )}
                     </div>
                   ) : (
-                    <p className="empty-state">Insert objects to see the result.</p>
+                    <p className="empty-state">Submit a request to see the result.</p>
                   )}
                 </section>
               </div>
