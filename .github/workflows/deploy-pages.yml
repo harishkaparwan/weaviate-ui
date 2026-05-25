@@ -44,6 +44,11 @@ jobs:
         working-directory: magic-portfolio
         run: npm run build
 
+      - name: Copy desktop installers into Pages output
+        run: |
+          mkdir -p magic-portfolio/out/desktop
+          cp -R public/desktop/. magic-portfolio/out/desktop/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
