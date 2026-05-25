@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Bump extension version to 1.0.2.
+- Refresh packaged extension artifacts.
+
 ## 1.0.1
 
 - Fix missing activity bar logo path.
