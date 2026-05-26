@@ -156,7 +156,7 @@ async function weaviateFetch(input: RequestInfo | URL, init?: RequestInit) {
 function SchemaIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <g stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <g stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round">
         <ellipse cx="12" cy="5.7" rx="6.6" ry="2.3" />
         <path d="M5.4 5.7v3.7c0 1.2 2.95 2.3 6.6 2.3s6.6-1.1 6.6-2.3V5.7" />
         <path d="M5.4 9.4v3.7c0 1.2 2.95 2.3 6.6 2.3s6.6-1.1 6.6-2.3V9.4" />

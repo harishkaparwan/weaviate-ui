@@ -22,6 +22,27 @@ Desktop app downloads:
 - macOS App ZIP: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip
 - Windows EXE: https://harishkaparwan.github.io/weaviate-ui/desktop/win/weaviate-ui_0.1.0_x64-setup.exe
 
+Install on macOS with Homebrew (Apple Silicon):
+
+```bash
+brew tap harishkaparwan/tap
+brew install --cask weaviate-ui
+```
+
+Update to a new version:
+
+```bash
+brew upgrade --cask weaviate-ui
+```
+
+Launch after install:
+
+```bash
+open /Applications/weaviate-ui.app
+```
+
+Or open it from Spotlight: `Cmd+Space` → type `weaviate-ui` → Enter.
+
 Container image references:
 
 - Docker Hub: https://hub.docker.com/r/harishkaparwan/weaviate-ui

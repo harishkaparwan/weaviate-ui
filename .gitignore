@@ -26,10 +26,15 @@ src-tauri/gen/
 *.local
 LOCAL_SETUP.local.md
 datasetup.md
+installer.md
+
+# Homebrew tap (managed as a separate repo)
+homebrew-tap/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/launch.json
 .idea
 .DS_Store
 *.suo
