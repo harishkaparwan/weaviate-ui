@@ -13,6 +13,7 @@
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db">VS Code Marketplace</a> ·
   <a href="https://open-vsx.org/extension/harishkaparwan/weaviate-db">Open VSX</a> ·
+  <a href="https://harishkaparwan.github.io/weaviate-ui/policy/privacy.html">Privacy Policy</a> ·
   <a href="https://github.com/harishkaparwan/weaviate-ui">GitHub</a>
 </p>
 
@@ -22,6 +23,8 @@ Extension downloads:
 
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db
 - Open VSX: https://open-vsx.org/extension/harishkaparwan/weaviate-db
+- Privacy Policy (GitHub Pages): https://harishkaparwan.github.io/weaviate-ui/policy/privacy.html
+- Privacy Policy (Repository file): https://github.com/harishkaparwan/weaviate-ui/blob/main/public/policy/privacy.html
 - Chrome extension source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
 
 Chrome extension install:
