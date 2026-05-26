@@ -91,6 +91,12 @@ podman run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weav
 
 After Weaviate is running, install or open the extension and connect to `http://localhost:8083`. If your Weaviate server is already running on another host or port, enter that endpoint in the connection panel.
 
+## Demo
+
+![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
+
+![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
+
 ## Screenshots
 
 ![Weaviate DB insert workflow](https://harishkaparwan.github.io/weaviate-ui/screenshots/screenshot-1-1280x800.jpg)

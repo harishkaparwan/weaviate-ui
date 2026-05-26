@@ -89,6 +89,12 @@ Then use `http://localhost:8083` in the connection panel. If you already have We
 - Run GraphQL queries against `/v1/graphql`
 - Run as a local Vite app, a public OCI container image, or a VS Code webview extension
 
+## Demo
+
+![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
+
+![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
+
 ## Screenshots
 
 ![Weaviate DB insert workflow](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/screenshot-1-1280x800.jpg)
