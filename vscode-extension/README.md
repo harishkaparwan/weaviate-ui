@@ -1,145 +1,141 @@
 # Weaviate DB
 
-<h2 align="center">
-  <strong>Weaviate, unified.</strong><br>
-  <em>Your workbench, everywhere you code.</em>
-</h2>
+<div align="center">
 
-<p align="center">
-  The fastest, most powerful way to inspect schemas, run queries, import data,<br>
-  and build RAG apps with Weaviate — right inside your editor.
-</p>
+<img src="https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/vscode-extension/icon.png" width="96" alt="Weaviate DB logo" />
 
-<p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db">VS Code Marketplace</a> ·
-  <a href="https://open-vsx.org/extension/harishkaparwan/weaviate-db">Open VSX</a> ·
-  <a href="https://github.com/harishkaparwan/weaviate-ui">GitHub</a>
-</p>
+<h2><strong>Weaviate, unified.</strong><br><em>Your workbench, everywhere you code.</em></h2>
 
-## Downloads
+<p>Browse schemas · Query objects · Import data · Run GraphQL — all without leaving your editor.</p>
 
-### VS Code Extension
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/harishkaparwan.weaviate-db?label=VS%20Code%20Marketplace&color=007ACC&logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db)
+[![Open VSX](https://img.shields.io/open-vsx/v/harishkaparwan/weaviate-db?label=Open%20VSX&color=952fd3)](https://open-vsx.org/extension/harishkaparwan/weaviate-db)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/harishkaparwan/weaviate-ui/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/source-GitHub-181717?logo=github)](https://github.com/harishkaparwan/weaviate-ui)
 
-- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db
-- Open VSX: https://open-vsx.org/extension/harishkaparwan/weaviate-db
+</div>
 
-Install from the Extensions panel in VS Code or any compatible editor and search for **Weaviate DB**.
+---
 
-### Chrome Extension
+## ✨ What is Weaviate DB?
 
-- Source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
+**Weaviate DB** is a zero-config workbench extension for [Weaviate](https://weaviate.io) — the AI-native vector database. It lives inside VS Code (and any compatible editor) so you can inspect, query, and manage your Weaviate instance without switching context.
 
-Install:
+Whether you're running a local Docker instance or a production Weaviate Cloud cluster, Weaviate DB gives you a full-featured GUI in a single panel.
 
-```text
-Build from chrome-extension/build and load it from chrome://extensions with Developer mode enabled.
+---
+
+## 🚀 Quick Start
+
+**1. Install the extension**
+
+Search **`Weaviate DB`** in the Extensions panel (`Ctrl+Shift+X`) or install from the Marketplace:
+
+```
+ext install harishkaparwan.weaviate-db
 ```
 
-### Desktop App
-
-- macOS DMG: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.dmg
-- macOS App ZIP: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip
-- Windows EXE: https://harishkaparwan.github.io/weaviate-ui/desktop/win/weaviate-ui_0.1.0_x64-setup.exe
-
-Install on macOS with Homebrew:
+**2. Start Weaviate** *(skip if you already have one running)*
 
 ```bash
+docker run --rm -p 8083:8080 -p 50051:50051 \
+  cr.weaviate.io/semitechnologies/weaviate:1.37.4
+```
+
+**3. Open the workbench**
+
+Click the **Weaviate DB icon** in the Activity Bar, or run from the Command Palette:
+
+```
+Weaviate DB: Open Workbench
+```
+
+**4. Connect**
+
+- **Local** → enter `http://localhost:8083` and click **Connect**
+- **Cluster** → switch to Cluster mode, paste your REST host + API key, click **Connect**
+
+That's it. Your schema, objects, and query interface load instantly.
+
+---
+
+## 🎬 See It In Action
+
+### Local Instance — Movie Class
+
+![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
+
+### Weaviate Cloud — Cluster Connection
+
+![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
+
+---
+
+## 🔧 Features
+
+| Capability | Details |
+|---|---|
+| 🔌 **Connect anywhere** | Local Docker, Weaviate Cloud, or any custom endpoint |
+| 🗂 **Schema browser** | Explore classes, properties, vectorizers, and index config |
+| 📦 **Object viewer** | Browse objects by class with configurable fetch limits |
+| ➕ **Batch import** | Prepare and push inserts from JSON or CSV |
+| 🔍 **GraphQL console** | Run queries directly against `/v1/graphql` |
+| 🔑 **Cluster auth** | API key sent as `Authorization: Bearer` + `X-Weaviate-Api-Key` |
+| 🌐 **Universal** | Works in VS Code, VSCodium, Cursor, and any VS Code-compatible editor |
+
+---
+
+## 🔗 Connection Modes
+
+### Local
+Connect to any Weaviate instance on your machine or network. No auth headers are added.
+
+```
+http://localhost:8083
+```
+
+> You can also point this to a local proxy like `http://localhost:8787`.
+
+### Cluster (Weaviate Cloud)
+Enter your cluster REST host and API key. The extension handles authentication automatically.
+
+```
+https://<cluster-id>.c0.<region>.gcp.weaviate.cloud
+```
+
+> Use the **REST host**, not the Weaviate Cloud Console URL.
+
+---
+
+## 📦 Also Available As
+
+| Platform | Link |
+|---|---|
+| 🌐 **Chrome Extension** | [Source on GitHub](https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension) |
+| 🖥 **macOS Desktop App** | [DMG download](https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.dmg) · [Homebrew](https://github.com/harishkaparwan/weaviate-ui) |
+| 🪟 **Windows Desktop App** | [EXE download](https://harishkaparwan.github.io/weaviate-ui/desktop/win/weaviate-ui_0.1.0_x64-setup.exe) |
+| 🐳 **Docker / Podman** | `docker pull harishkaparwan/weaviate-ui:latest` |
+
+```bash
+# macOS via Homebrew
 brew tap harishkaparwan/tap
 brew install --cask weaviate-ui
 ```
 
-Update to a new version:
-
 ```bash
-brew upgrade --cask weaviate-ui
-```
-
-Launch after install:
-
-```bash
-open /Applications/weaviate-ui.app
-```
-
-Or open it from Spotlight: `Cmd+Space` → type `weaviate-ui` → Enter.
-
-Docker image references:
-
-- Docker Hub: https://hub.docker.com/r/harishkaparwan/weaviate-ui
-- GHCR: https://github.com/harishkaparwan/weaviate-ui/pkgs/container/weaviate-ui
-
-Run with Podman:
-
-```bash
-podman pull ghcr.io/harishkaparwan/weaviate-ui:latest
-podman run --rm -p 8080:80 ghcr.io/harishkaparwan/weaviate-ui:latest
-```
-
-Run with Docker:
-
-```bash
-docker pull harishkaparwan/weaviate-ui:latest
+# Docker
 docker run --rm -p 8080:80 harishkaparwan/weaviate-ui:latest
 ```
 
-## Before You Install
+---
 
-Start a Weaviate database first. You can use an existing local or remote Weaviate server, or start one with Docker or Podman.
+## 🐛 Issues & Feedback
 
-Docker:
+Found a bug or have a feature request? [Open an issue on GitHub](https://github.com/harishkaparwan/weaviate-ui/issues).
 
-```bash
-docker run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
-```
+---
 
-Podman:
+<div align="center">
+  <sub>Built with ❤️ for the Weaviate community · <a href="https://github.com/harishkaparwan/weaviate-ui">harishkaparwan/weaviate-ui</a></sub>
+</div>
 
-```bash
-podman run --rm -p 8083:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.37.4
-```
-
-After Weaviate is running, install or open the extension and connect to `http://localhost:8083`. If your Weaviate server is already running on another host or port, enter that endpoint in the connection panel.
-
-## Demo
-
-![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
-
-![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
-
-## Features
-
-- Connect to local or remote Weaviate endpoints, including `http://localhost:8083`
-- Browse schema classes, properties, vectorizer settings, and index metadata
-- View objects by class with configurable limits
-- Prepare batch inserts from JSON or CSV
-- Run GraphQL queries against `/v1/graphql`
-
-## Usage
-
-After Weaviate is running, open Weaviate DB from the Activity Bar, then use the **Workbench** view.
-
-You can also open the full editor-tab workbench from the command palette:
-
-```text
-Weaviate UI: Open Workbench
-```
-
-The workbench opens in an editor tab. Enter your local or remote Weaviate endpoint to inspect a real database.
-
-## Connection Notes
-
-Weaviate DB supports two connection types:
-
-- `Local`: Use this for local instances such as `http://localhost:8083` or a local proxy endpoint.
-- `Cluster`: Use this for Weaviate Cloud clusters. Enter your full REST host, for example `https://<cluster-id>.c0.<region>.gcp.weaviate.cloud`, and provide your API key.
-
-If your Weaviate instance runs on a different host or port, enter that endpoint in the connection field.
-
-Cluster notes:
-
-- Use the cluster REST endpoint, not the console URL.
-- The extension sends your API key as `Authorization: Bearer <key>` and `X-Weaviate-Api-Key` automatically.
-- In desktop builds, cluster requests are routed through the native app backend to avoid webview CORS restrictions.
-
-Repository URL:
-
-- https://github.com/harishkaparwan/weaviate-ui
