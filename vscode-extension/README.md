@@ -1,12 +1,20 @@
 # Weaviate DB
 
-Weaviate DB is a self-contained workbench for inspecting and querying Weaviate from VS Code-compatible editors.
+<h2 align="center">
+  <strong>Weaviate, unified.</strong><br>
+  <em>Your workbench, everywhere you code.</em>
+</h2>
 
-<h1>Weaviate DB.<br>Your workbench.<br>Everywhere you code.</h1>
+<p align="center">
+  The fastest, most powerful way to inspect schemas, run queries, import data,<br>
+  and build RAG apps with Weaviate — right inside your editor.
+</p>
 
-<p>The fastest, most powerful way to inspect schemas, run queries, import data, and build RAG apps with Weaviate from inside your editor.</p>
-
-GitHub: https://github.com/harishkaparwan/weaviate-ui
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db">VS Code Marketplace</a> ·
+  <a href="https://open-vsx.org/extension/harishkaparwan/weaviate-db">Open VSX</a> ·
+  <a href="https://github.com/harishkaparwan/weaviate-ui">GitHub</a>
+</p>
 
 ## Downloads
 
@@ -96,14 +104,6 @@ After Weaviate is running, install or open the extension and connect to `http://
 ![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
 
 ![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
-
-## Screenshots
-
-![Weaviate DB insert workflow](https://harishkaparwan.github.io/weaviate-ui/screenshots/screenshot-1-1280x800.jpg)
-
-![Weaviate DB object browser](https://harishkaparwan.github.io/weaviate-ui/screenshots/screenshot-2-1280x800.jpg)
-
-![Weaviate DB cluster connection](https://harishkaparwan.github.io/weaviate-ui/screenshots/weaver-cluser-image.jpg)
 
 ## Features
 

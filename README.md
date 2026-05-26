@@ -1,6 +1,20 @@
-# Weaviate UI
+# Weaviate DB
 
-A lightweight React workbench for browsing a local or remote Weaviate instance. It can inspect schema classes, view objects, prepare inserts from JSON or CSV, and run GraphQL queries from a focused browser UI.
+<h2 align="center">
+  <strong>Weaviate, unified.</strong><br>
+  <em>Your workbench, everywhere you code.</em>
+</h2>
+
+<p align="center">
+  The fastest, most powerful way to inspect schemas, run queries, import data,<br>
+  and build RAG apps with Weaviate — right inside your editor.
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db">VS Code Marketplace</a> ·
+  <a href="https://open-vsx.org/extension/harishkaparwan/weaviate-db">Open VSX</a> ·
+  <a href="https://github.com/harishkaparwan/weaviate-ui">GitHub</a>
+</p>
 
 ## Downloads
 
@@ -94,14 +108,6 @@ Then use `http://localhost:8083` in the connection panel. If you already have We
 ![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
 
 ![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
-
-## Screenshots
-
-![Weaviate DB insert workflow](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/screenshot-1-1280x800.jpg)
-
-![Weaviate DB object browser](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/screenshot-2-1280x800.jpg)
-
-![Weaviate DB cluster connection](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/weaver-cluser-image.jpg)
 
 ## Local Development
 
