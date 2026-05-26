@@ -10,23 +10,49 @@ GitHub: https://github.com/harishkaparwan/weaviate-ui
 
 ## Downloads
 
-Extension downloads:
+### VS Code Extension
 
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=harishkaparwan.weaviate-db
 - Open VSX: https://open-vsx.org/extension/harishkaparwan/weaviate-db
-- Chrome extension source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
 
-Chrome extension install:
+Install from the Extensions panel in VS Code or any compatible editor and search for **Weaviate DB**.
+
+### Chrome Extension
+
+- Source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
+
+Install:
 
 ```text
 Build from chrome-extension/build and load it from chrome://extensions with Developer mode enabled.
 ```
 
-Desktop app downloads:
+### Desktop App
 
 - macOS DMG: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.dmg
 - macOS App ZIP: https://harishkaparwan.github.io/weaviate-ui/desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip
 - Windows EXE: https://harishkaparwan.github.io/weaviate-ui/desktop/win/weaviate-ui_0.1.0_x64-setup.exe
+
+Install on macOS with Homebrew:
+
+```bash
+brew tap harishkaparwan/tap
+brew install --cask weaviate-ui
+```
+
+Update to a new version:
+
+```bash
+brew upgrade --cask weaviate-ui
+```
+
+Launch after install:
+
+```bash
+open /Applications/weaviate-ui.app
+```
+
+Or open it from Spotlight: `Cmd+Space` → type `weaviate-ui` → Enter.
 
 Docker image references:
 

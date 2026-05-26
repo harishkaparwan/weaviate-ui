@@ -2,7 +2,7 @@
   "name": "weaviate-db",
   "displayName": "Weaviate DB",
   "description": "Browse Weaviate schemas, objects, imports, and GraphQL queries from an editor webview.",
-  "version": "1.0.3",
+  "version": "1.1.5",
   "publisher": "harishkaparwan",
   "license": "MIT",
   "repository": {
@@ -11,21 +11,36 @@
     "directory": "vscode-extension"
   },
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Data Science",
     "Other"
   ],
   "icon": "icon.png",
+  "pricing": "Free",
+  "sponsor": {
+    "url": "https://github.com/sponsors/harishkaparwan"
+  },
+  "targets": [
+    "universal"
+  ],
   "keywords": [
     "weaviate",
+    "vector database",
+    "vector search",
     "database",
     "vector-database",
     "graphql",
-    "workbench"
+    "workbench",
+    "AI database",
+    "semantic search",
+    "embedding",
+    "schema browser",
+    "data explorer"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onCommand:weaviate-ui.open",
     "onView:weaviate-ui.workbench"
   ],
