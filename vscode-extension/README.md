@@ -61,13 +61,17 @@ That's it. Your schema, objects, and query interface load instantly.
 
 ## 🎬 See It In Action
 
-### Local Instance — Movie Class
+### 💻 Local Instance — Movie Class
 
-![Weaviate DB – local connection, Movie class: overview, schema, objects](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local.gif)
+<div align="center">
+<img src="https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_local_laptop.gif" width="860" alt="Weaviate DB – local connection, Movie class: overview, schema, objects" />
+</div>
 
-### Weaviate Cloud — Cluster Connection
+### ☁️ Weaviate Cloud — Cluster Connection
 
-![Weaviate DB – cluster connection, SampleProducts class](https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster.gif)
+<div align="center">
+<img src="https://raw.githubusercontent.com/harishkaparwan/weaviate-ui/main/public/screenshots/gif/weaviate-demo_cluster_laptop.gif" width="860" alt="Weaviate DB – cluster connection, SampleProducts class" />
+</div>
 
 ---
 
