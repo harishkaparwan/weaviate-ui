@@ -24,35 +24,50 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/checkout@v4
         with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: magic-portfolio/package-lock.json
+          lfs: true
+
+      - name: Prepare Pages output
+        run: |
+          mkdir -p out/desktop
+          cp -R public/desktop/. out/desktop/
+          cat > out/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <title>Weaviate UI — Downloads</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <style>
+              body { margin: 0; font-family: system-ui, sans-serif; background: #0a0a0a; color: #e5e5e5; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+              .card { max-width: 480px; width: 100%; padding: 2rem; border: 1px solid #2a2a2a; border-radius: 12px; background: #111; }
+              h1 { font-size: 1.4rem; margin: 0 0 0.4rem; color: #fff; }
+              p { font-size: 0.9rem; color: #888; margin: 0 0 1.5rem; }
+              a.btn { display: block; padding: 0.75rem 1rem; border-radius: 8px; background: #18181b; border: 1px solid #3f3f46; color: #a78bfa; text-decoration: none; font-size: 0.875rem; margin-bottom: 0.75rem; }
+              a.btn:hover { background: #27272a; }
+              .label { font-size: 0.7rem; color: #52525b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>Weaviate UI</h1>
+              <p>Desktop app for vector database operations — schema inspection, object browsing, and GraphQL queries.</p>
+              <div class="label">macOS (Apple Silicon)</div>
+              <a class="btn" href="desktop/mac/weaviate-ui_0.1.0_aarch64.app.zip">⬇ weaviate-ui_0.1.0_aarch64.app.zip</a>
+              <a class="btn" href="desktop/mac/weaviate-ui_0.1.0_aarch64.dmg">⬇ weaviate-ui_0.1.0_aarch64.dmg</a>
+            </div>
+          </body>
+          </html>
+          EOF
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Install dependencies
-        working-directory: magic-portfolio
-        run: npm ci
-
-      - name: Build site
-        working-directory: magic-portfolio
-        run: npm run build
-
-      - name: Copy desktop installers into Pages output
-        run: |
-          mkdir -p magic-portfolio/out/desktop
-          cp -R public/desktop/. magic-portfolio/out/desktop/
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./magic-portfolio/out
+          path: ./out
 
       - name: Deploy to GitHub Pages
         id: deployment
