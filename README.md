@@ -25,7 +25,7 @@ Extension downloads:
 - Open VSX: https://open-vsx.org/extension/harishkaparwan/weaviate-db
 - Privacy Policy (GitHub Pages): https://harishkaparwan.github.io/weaviate-ui/policy/privacy.html
 - Privacy Policy (Repository file): https://github.com/harishkaparwan/weaviate-ui/blob/main/public/policy/privacy.html
-- Chrome extension source: https://github.com/harishkaparwan/weaviate-ui/tree/main/chrome-extension
+- Chrome extension (Web Store): https://chromewebstore.google.com/detail/naooobcljglmgfefiblbgkdlcomgamhc?utm_source=item-share-cb
 
 Chrome extension install:
 
@@ -233,6 +233,12 @@ Then open `vscode-extension/` in VS Code and run the extension host. Use the com
 ## Chrome Extension
 
 The Chrome extension lives in `chrome-extension/`. It opens the same built UI in a Chrome extension tab.
+
+Install from Chrome Web Store:
+
+```text
+https://chromewebstore.google.com/detail/naooobcljglmgfefiblbgkdlcomgamhc?utm_source=item-share-cb
+```
 
 Build the unpacked extension:
 

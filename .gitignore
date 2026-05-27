@@ -44,4 +44,3 @@ homebrew-tap/
 *.sw?
 
 # VS Code extension (local only)
-vscode-extension/
