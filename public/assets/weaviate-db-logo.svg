@@ -1,33 +1,6 @@
 <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="40" y1="220" x2="220" y2="40">
-      <stop offset="0%" stop-color="#ff4fd8"/>
-      <stop offset="50%" stop-color="#7b61ff"/>
-      <stop offset="100%" stop-color="#19d7ff"/>
-    </linearGradient>
-
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <rect x="28" y="28" width="200" height="200" rx="48" fill="#17182b"/>
-  <rect x="28" y="28" width="200" height="200" rx="48" fill="url(#bg)" opacity="0.28"/>
-  <circle cx="128" cy="128" r="70" fill="none" stroke="#f4f7ff" stroke-width="10" opacity="0.95"/>
-  <path
-    d="M82 88
-       L106 170
-       L128 112
-       L150 170
-       L174 88"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="14"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    filter="url(#glow)"/>
+  <rect width="256" height="256" rx="56" fill="#2d2d5f"/>
+  <circle cx="128" cy="128" r="85" fill="none" stroke="#e8e8f0" stroke-width="12"/>
+  <path d="M 80 140 L 100 80 L 115 130 L 128 90 L 141 130 L 156 80 L 176 140" 
+        fill="none" stroke="#e8e8f0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
