@@ -1,7 +1,7 @@
 {
   "name": "weaviate-ui",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.1.16",
   "description": "A browser-based workbench for inspecting Weaviate schemas, objects, inserts, and GraphQL queries.",
   "license": "MIT",
   "repository": {
